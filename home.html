@@ -43,22 +43,23 @@
         </header>
 
         <main class="main-container grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
+            <!-- CSV Input Section -->
             <div class="flex flex-col bg-white p-6 rounded-xl shadow-md border border-gray-200">
                 <label for="csvInput" class="text-xl font-semibold mb-3 text-gray-700">CSV Input</label>
-                <textarea id="csvInput" class="flex-grow w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow duration-200" placeholder="name,age,city
-John Doe,29,New York
-Jane Smith,34,London"></textarea>
+                <textarea id="csvInput" class="flex-grow w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow duration-200" placeholder="reg_no,name
+IAN/2025/11,Dibya Sundar Padhy
+IAN/2025/12,JANANI.T
+IAN/2025/13,Raghu Vemuganti"></textarea>
             </div>
 
-            
+            <!-- JSON Output Section -->
             <div class="flex flex-col bg-white p-6 rounded-xl shadow-md border border-gray-200">
                  <label for="jsonOutput" class="text-xl font-semibold mb-3 text-gray-700">JSON Output</label>
                 <textarea id="jsonOutput" readonly class="flex-grow w-full p-4 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-shadow duration-200" placeholder="Your JSON result will appear here..."></textarea>
             </div>
         </main>
         
-        
+        <!-- Action Buttons -->
         <div class="flex flex-wrap justify-center items-center gap-4 mt-6">
             <button id="convertBtn" class="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-transform transform hover:scale-105">
                 Convert to JSON
@@ -72,7 +73,7 @@ Jane Smith,34,London"></textarea>
         </div>
     </div>
     
-    
+    <!-- Notification element -->
     <div id="notification" class="notification bg-gray-800"></div>
 
     <script>
@@ -83,7 +84,6 @@ Jane Smith,34,London"></textarea>
         const clearBtn = document.getElementById('clearBtn');
         const notification = document.getElementById('notification');
 
-        
         convertBtn.addEventListener('click', () => {
             const csvText = csvInput.value.trim();
             if (!csvText) {
@@ -94,7 +94,6 @@ Jane Smith,34,London"></textarea>
 
             try {
                 const lines = csvText.split(/\r?\n/);
-                
                 const filteredLines = lines.filter(line => line.trim() !== '');
                 if (filteredLines.length < 2) {
                     throw new Error('CSV must have a header row and at least one data row.');
@@ -105,9 +104,7 @@ Jane Smith,34,London"></textarea>
 
                 for (let i = 1; i < filteredLines.length; i++) {
                     const obj = {};
-                    // Regular expression to basically match trim nd cut the csv data
                     const values = filteredLines[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g) || [];
-                    
                     
                     const cleanedValues = values.map(value => {
                         return value.trim().replace(/^"|"$/g, '').trim();
@@ -115,7 +112,7 @@ Jane Smith,34,London"></textarea>
 
                     if (cleanedValues.length !== headers.length) {
                          console.warn(`Row ${i+1} has a different number of columns than the header. Skipping.`);
-                         continue; 
+                         continue;
                     }
 
                     for (let j = 0; j < headers.length; j++) {
@@ -124,7 +121,7 @@ Jane Smith,34,London"></textarea>
                     result.push(obj);
                 }
 
-                jsonOutput.value = JSON.stringify(result, null, 4); 
+                jsonOutput.value = JSON.stringify(result, null, 4);
                 showNotification('Conversion successful!', 'bg-green-600');
             } catch (error) {
                 jsonOutput.value = `Error: ${error.message}`;
@@ -132,14 +129,12 @@ Jane Smith,34,London"></textarea>
             }
         });
 
-       
         copyBtn.addEventListener('click', () => {
             const jsonText = jsonOutput.value;
             if (!jsonText || jsonText.startsWith('Error:')) {
                 showNotification('Nothing to copy!', 'bg-yellow-500');
                 return;
             }
-            
             
             const tempTextArea = document.createElement('textarea');
             tempTextArea.value = jsonText;
@@ -154,17 +149,15 @@ Jane Smith,34,London"></textarea>
             document.body.removeChild(tempTextArea);
         });
         
-       
         clearBtn.addEventListener('click', () => {
            csvInput.value = '';
            jsonOutput.value = '';
            showNotification('Cleared fields.', 'bg-gray-700');
         });
 
-        
         function showNotification(message, colorClass) {
             notification.textContent = message;
-            notification.className = 'notification'; 
+            notification.className = 'notification';
             notification.classList.add(colorClass, 'show');
 
             setTimeout(() => {
@@ -175,3 +168,4 @@ Jane Smith,34,London"></textarea>
     </script>
 </body>
 </html>
+
