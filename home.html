@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV to JSON Converter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .main-container {
+            min-height: calc(100vh - 4rem);
+        }
+        textarea {
+            resize: none;
+        }
+        .notification {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            pointer-events: none;
+        }
+        .notification.show {
+            opacity: 1;
+            transform: translate(-50%, -10px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900">CSV to JSON Converter</h1>
+            <p class="text-lg text-gray-600 mt-2">Paste your CSV data below to convert it into a clean JSON format.</p>
+        </header>
+
+        <main class="main-container grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <div class="flex flex-col bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                <label for="csvInput" class="text-xl font-semibold mb-3 text-gray-700">CSV Input</label>
+                <textarea id="csvInput" class="flex-grow w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow duration-200" placeholder="name,age,city
+John Doe,29,New York
+Jane Smith,34,London"></textarea>
+            </div>
+
+            
+            <div class="flex flex-col bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                 <label for="jsonOutput" class="text-xl font-semibold mb-3 text-gray-700">JSON Output</label>
+                <textarea id="jsonOutput" readonly class="flex-grow w-full p-4 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-shadow duration-200" placeholder="Your JSON result will appear here..."></textarea>
+            </div>
+        </main>
+        
+        
+        <div class="flex flex-wrap justify-center items-center gap-4 mt-6">
+            <button id="convertBtn" class="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-transform transform hover:scale-105">
+                Convert to JSON
+            </button>
+            <button id="copyBtn" class="px-8 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-transform transform hover:scale-105">
+                Copy JSON
+            </button>
+            <button id="clearBtn" class="px-8 py-3 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-transform transform hover:scale-105">
+                Clear
+            </button>
+        </div>
+    </div>
+    
+    
+    <div id="notification" class="notification bg-gray-800"></div>
+
+    <script>
+        const csvInput = document.getElementById('csvInput');
+        const jsonOutput = document.getElementById('jsonOutput');
+        const convertBtn = document.getElementById('convertBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const notification = document.getElementById('notification');
+
+        
+        convertBtn.addEventListener('click', () => {
+            const csvText = csvInput.value.trim();
+            if (!csvText) {
+                showNotification('CSV input is empty!', 'bg-red-500');
+                jsonOutput.value = '';
+                return;
+            }
+
+            try {
+                const lines = csvText.split(/\r?\n/);
+                
+                const filteredLines = lines.filter(line => line.trim() !== '');
+                if (filteredLines.length < 2) {
+                    throw new Error('CSV must have a header row and at least one data row.');
+                }
+                
+                const headers = filteredLines[0].split(',').map(header => header.trim());
+                const result = [];
+
+                for (let i = 1; i < filteredLines.length; i++) {
+                    const obj = {};
+                    // Regular expression to basically match trim nd cut the csv data
+                    const values = filteredLines[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g) || [];
+                    
+                    
+                    const cleanedValues = values.map(value => {
+                        return value.trim().replace(/^"|"$/g, '').trim();
+                    });
+
+                    if (cleanedValues.length !== headers.length) {
+                         console.warn(`Row ${i+1} has a different number of columns than the header. Skipping.`);
+                         continue; 
+                    }
+
+                    for (let j = 0; j < headers.length; j++) {
+                        obj[headers[j]] = cleanedValues[j];
+                    }
+                    result.push(obj);
+                }
+
+                jsonOutput.value = JSON.stringify(result, null, 4); 
+                showNotification('Conversion successful!', 'bg-green-600');
+            } catch (error) {
+                jsonOutput.value = `Error: ${error.message}`;
+                showNotification(error.message, 'bg-red-500');
+            }
+        });
+
+       
+        copyBtn.addEventListener('click', () => {
+            const jsonText = jsonOutput.value;
+            if (!jsonText || jsonText.startsWith('Error:')) {
+                showNotification('Nothing to copy!', 'bg-yellow-500');
+                return;
+            }
+            
+            
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = jsonText;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            try {
+                 document.execCommand('copy');
+                 showNotification('JSON copied to clipboard!', 'bg-blue-600');
+            } catch (err) {
+                 showNotification('Failed to copy!', 'bg-red-500');
+            }
+            document.body.removeChild(tempTextArea);
+        });
+        
+       
+        clearBtn.addEventListener('click', () => {
+           csvInput.value = '';
+           jsonOutput.value = '';
+           showNotification('Cleared fields.', 'bg-gray-700');
+        });
+
+        
+        function showNotification(message, colorClass) {
+            notification.textContent = message;
+            notification.className = 'notification'; 
+            notification.classList.add(colorClass, 'show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+    </script>
+</body>
+</html>
