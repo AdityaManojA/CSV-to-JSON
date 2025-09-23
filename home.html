@@ -32,49 +32,97 @@
             opacity: 1;
             transform: translate(-50%, -10px);
         }
+        
+        .custom-radio:checked {
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
+            border-color: #4f46e5;
+            background-color: #4f46e5;
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-gray-900 text-gray-200">
 
     <div class="container mx-auto px-4 py-8">
         <header class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-900">CSV to JSON Converter</h1>
-            <p class="text-lg text-gray-600 mt-2">Paste your CSV data below to convert it into a clean JSON format.</p>
+            <h1 class="text-4xl font-bold text-white">CSV to JSON Converter</h1>
+            <p class="text-lg text-gray-400 mt-2">An advanced tool to seamlessly convert your CSV data.</p>
         </header>
 
+        
+        <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700 mb-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <div>
+                <h3 class="text-lg font-semibold text-white mb-3">Delimiter</h3>
+                <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="radio" name="delimiter" id="delimiterComma" class="form-radio custom-radio h-4 w-4 text-indigo-600 bg-gray-700 border-gray-600 focus:ring-indigo-500" value="," checked>
+                        <span>Comma (,)</span>
+                    </label>
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="radio" name="delimiter" id="delimiterSemicolon" class="form-radio custom-radio h-4 w-4 text-indigo-600 bg-gray-700 border-gray-600 focus:ring-indigo-500" value=";">
+                        <span>Semicolon (;)</span>
+                    </label>
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="radio" name="delimiter" id="delimiterTab" class="form-radio custom-radio h-4 w-4 text-indigo-600 bg-gray-700 border-gray-600 focus:ring-indigo-500" value="\t">
+                        <span>Tab</span>
+                    </label>
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="radio" name="delimiter" id="delimiterCustom" class="form-radio custom-radio h-4 w-4 text-indigo-600 bg-gray-700 border-gray-600 focus:ring-indigo-500" value="custom">
+                        <span>Custom:</span>
+                    </label>
+                    <input type="text" id="customDelimiterInput" class="bg-gray-900 border border-gray-600 rounded-md px-2 py-1 w-16 text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+            </div>
+            
+            <div>
+                <h3 class="text-lg font-semibold text-white mb-3">JSON Formatting</h3>
+                <div class="flex items-center space-x-6">
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="radio" name="spacing" id="spacing4" class="form-radio custom-radio h-4 w-4 text-indigo-600 bg-gray-700 border-gray-600 focus:ring-indigo-500" value="4" checked>
+                        <span>4 Spaces</span>
+                    </label>
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="radio" name="spacing" id="spacing2" class="form-radio custom-radio h-4 w-4 text-indigo-600 bg-gray-700 border-gray-600 focus:ring-indigo-500" value="2">
+                        <span>2 Spaces</span>
+                    </label>
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="radio" name="spacing" id="spacingCompact" class="form-radio custom-radio h-4 w-4 text-indigo-600 bg-gray-700 border-gray-600 focus:ring-indigo-500" value="0">
+                        <span>Compact</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+
         <main class="main-container grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- CSV Input Section -->
-            <div class="flex flex-col bg-white p-6 rounded-xl shadow-md border border-gray-200">
-                <label for="csvInput" class="text-xl font-semibold mb-3 text-gray-700">CSV Input</label>
-                <textarea id="csvInput" class="flex-grow w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow duration-200" placeholder="reg_no,name
-IAN/2025/11,Dibya Sundar Padhy
-IAN/2025/12,JANANI.T
-IAN/2025/13,Raghu Vemuganti"></textarea>
+            
+            <div class="flex flex-col bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                <label for="csvInput" class="text-xl font-semibold mb-3 text-white">CSV Input</label>
+                <textarea id="csvInput" class="flex-grow w-full p-4 border border-gray-600 bg-gray-900 text-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow duration-200" placeholder="header1,header2,header3&#10;value1,value2,value3"></textarea>
             </div>
 
-            <!-- JSON Output Section -->
-            <div class="flex flex-col bg-white p-6 rounded-xl shadow-md border border-gray-200">
-                 <label for="jsonOutput" class="text-xl font-semibold mb-3 text-gray-700">JSON Output</label>
-                <textarea id="jsonOutput" readonly class="flex-grow w-full p-4 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-shadow duration-200" placeholder="Your JSON result will appear here..."></textarea>
+            
+            <div class="flex flex-col bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                 <label for="jsonOutput" class="text-xl font-semibold mb-3 text-white">JSON Output</label>
+                <textarea id="jsonOutput" readonly class="flex-grow w-full p-4 border border-gray-600 bg-gray-900 text-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-shadow duration-200" placeholder="Your JSON result will appear here..."></textarea>
             </div>
         </main>
         
-        <!-- Action Buttons -->
-        <div class="flex flex-wrap justify-center items-center gap-4 mt-6">
-            <button id="convertBtn" class="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-transform transform hover:scale-105">
+        
+        <div class="flex flex-wrap justify-center items-center gap-4 mt-8">
+            <button id="convertBtn" class="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-indigo-500 transition-transform transform hover:scale-105">
                 Convert to JSON
             </button>
-            <button id="copyBtn" class="px-8 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-transform transform hover:scale-105">
+            <button id="copyBtn" class="px-8 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-green-500 transition-transform transform hover:scale-105">
                 Copy JSON
             </button>
-            <button id="clearBtn" class="px-8 py-3 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-transform transform hover:scale-105">
+            <button id="clearBtn" class="px-8 py-3 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-red-500 transition-transform transform hover:scale-105">
                 Clear
             </button>
         </div>
     </div>
     
-    <!-- Notification element -->
-    <div id="notification" class="notification bg-gray-800"></div>
+    <div id="notification" class="notification bg-gray-700"></div>
 
     <script>
         const csvInput = document.getElementById('csvInput');
@@ -83,6 +131,27 @@ IAN/2025/13,Raghu Vemuganti"></textarea>
         const copyBtn = document.getElementById('copyBtn');
         const clearBtn = document.getElementById('clearBtn');
         const notification = document.getElementById('notification');
+        const customDelimiterInput = document.getElementById('customDelimiterInput');
+
+        function getSelectedDelimiter() {
+            const selected = document.querySelector('input[name="delimiter"]:checked').value;
+            if (selected === 'custom') {
+                return customDelimiterInput.value || ',';
+            }
+            if (selected === '\\t') {
+                return '\t';
+            }
+            return selected;
+        }
+
+        function getSelectedSpacing() {
+            const spacing = document.querySelector('input[name="spacing"]:checked').value;
+            return parseInt(spacing, 10) || null;
+        }
+
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); 
+        }
 
         convertBtn.addEventListener('click', () => {
             const csvText = csvInput.value.trim();
@@ -93,18 +162,24 @@ IAN/2025/13,Raghu Vemuganti"></textarea>
             }
 
             try {
+                const delimiter = getSelectedDelimiter();
+                const spacing = getSelectedSpacing();
+
                 const lines = csvText.split(/\r?\n/);
                 const filteredLines = lines.filter(line => line.trim() !== '');
                 if (filteredLines.length < 2) {
                     throw new Error('CSV must have a header row and at least one data row.');
                 }
                 
-                const headers = filteredLines[0].split(',').map(header => header.trim());
+                const headers = filteredLines[0].split(delimiter).map(header => header.trim());
                 const result = [];
+
+                const escapedDelimiter = escapeRegExp(delimiter);
+                const regex = new RegExp(`(".*?"|[^"${escapedDelimiter}]+)(?=\\s*${escapedDelimiter}|\\s*$)`, 'g');
 
                 for (let i = 1; i < filteredLines.length; i++) {
                     const obj = {};
-                    const values = filteredLines[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g) || [];
+                    const values = filteredLines[i].match(regex) || [];
                     
                     const cleanedValues = values.map(value => {
                         return value.trim().replace(/^"|"$/g, '').trim();
@@ -121,7 +196,7 @@ IAN/2025/13,Raghu Vemuganti"></textarea>
                     result.push(obj);
                 }
 
-                jsonOutput.value = JSON.stringify(result, null, 4);
+                jsonOutput.value = JSON.stringify(result, null, spacing);
                 showNotification('Conversion successful!', 'bg-green-600');
             } catch (error) {
                 jsonOutput.value = `Error: ${error.message}`;
@@ -142,7 +217,7 @@ IAN/2025/13,Raghu Vemuganti"></textarea>
             tempTextArea.select();
             try {
                  document.execCommand('copy');
-                 showNotification('JSON copied to clipboard!', 'bg-blue-600');
+                 showNotification('JSON copied to clipboard!', 'bg-indigo-600');
             } catch (err) {
                  showNotification('Failed to copy!', 'bg-red-500');
             }
@@ -152,7 +227,7 @@ IAN/2025/13,Raghu Vemuganti"></textarea>
         clearBtn.addEventListener('click', () => {
            csvInput.value = '';
            jsonOutput.value = '';
-           showNotification('Cleared fields.', 'bg-gray-700');
+           showNotification('Cleared fields.', 'bg-gray-600');
         });
 
         function showNotification(message, colorClass) {
